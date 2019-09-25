@@ -106,7 +106,7 @@ contract MogulOrganisation is Whitelisting, MovementNotifier {
         require(mogulUSD.allowance(msg.sender, address(this)) >= usdAmount, "invest:: Investor tries to invest with unapproved USD amount");
         
         if (!whiteList[msg.sender]) {
-            require(confirmedByWhiteLister(signedData));
+            require(confirmedByManager(signedData));
             _setWhitelisted(msg.sender, true);
         }
 
@@ -128,25 +128,21 @@ contract MogulOrganisation is Whitelisting, MovementNotifier {
     */
     function sell(uint256 _amountMGL) public {
         require(tx.gasprice == maxGasPrice);
+        require(mogulToken.allowance(msg.sender, address(this)) >= _amountMGL, "revokeInvestment:: Investor wants to withdraw MGL without allowance");
+    
+        uint256 usdToReturn = calcUSDToReturn(_amountMGL);
+    
+        mogulUSD.transfer(msg.sender, usdToReturn);
+        mogulToken.burnFrom(msg.sender, _amountMGL);
+    
+        emit Withdraw(msg.sender, usdToReturn);
+    }
+    
+    function calcUSDToReturn(uint256 _amountMGL) public view returns(uint256){
         if (mogulOrgState == State.LIVE) {
-            require(mogulToken.allowance(msg.sender, address(this)) >= _amountMGL, "revokeInvestment:: Investor wants to withdraw MGL without allowance");
-    
-            uint256 usdToReturn = bondingMath.calcTokenSell(mogulToken.totalSupply(), mogulUSD.balanceOf(address(this)), _amountMGL);
-    
-            mogulUSD.transfer(msg.sender, usdToReturn);
-    
-            mogulToken.burnFrom(msg.sender, _amountMGL);
-            
-            emit Withdraw(msg.sender, usdToReturn);
-        } else if (mogulOrgState == State.CLOSED) {
-            require(mogulToken.allowance(msg.sender, address(this)) >= _amountMGL, "revokeInvestment:: Investor wants to withdraw MGL without allowance");
-            
-            uint256 usdToReturn = mogulUSD.balanceOf(address(this)).mul(_amountMGL).div(mogulToken.totalSupply());
-    
-            mogulUSD.transfer(msg.sender, usdToReturn);
-            mogulToken.burnFrom(msg.sender, _amountMGL);
-    
-            emit Withdraw(msg.sender, usdToReturn);
+            return bondingMath.calcTokenSell(mogulToken.totalSupply(), mogulUSD.balanceOf(address(this)), _amountMGL);
+        } else if(mogulOrgState == State.CLOSED) {
+            return mogulUSD.balanceOf(address(this)).mul(_amountMGL).div(mogulToken.totalSupply());
         }
     }
     
