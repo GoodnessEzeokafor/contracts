@@ -256,15 +256,15 @@ describe('Mogul Organisation Contract', function () {
             it('Should change whiteLister', async () => {
                 const newWhiteLister = accounts[5].signer.address;
 
-                await mogulOrganisationInstance.setWhiteLister(newWhiteLister);
-                const newWhiteListerFromContract = await mogulOrganisationInstance.whiteLister();
+                await mogulOrganisationInstance.setManager(newWhiteLister);
+                const newWhiteListerFromContract = await mogulOrganisationInstance.manager();
 
                 assert.strictEqual(newWhiteListerFromContract, newWhiteLister, "WhiteLister is not changed correctly");
             });
 
             it('Should let new whitelister to whitelist user', async () => {
                 const newWhiteLister = accounts[5].signer;
-                await mogulOrganisationInstance.setWhiteLister(newWhiteLister.address);
+                await mogulOrganisationInstance.setManager(newWhiteLister.address);
 
                 const signedData = hashData(newWhiteLister, INVESTOR.address);
 
@@ -279,7 +279,7 @@ describe('Mogul Organisation Contract', function () {
 
             it('Should not allow old admin to whitelist users', async () => {
                 const newWhiteLister = accounts[5].signer;
-                await mogulOrganisationInstance.setWhiteLister(newWhiteLister.address);
+                await mogulOrganisationInstance.setManager(newWhiteLister.address);
 
                 const signedData = hashData(OWNER, INVESTOR.address);
 
@@ -291,7 +291,7 @@ describe('Mogul Organisation Contract', function () {
 
             it('Should throw on trying to change whitelister not from owner', async () => {
                 const newWhiteLister = accounts[5].signer.address;
-                await assert.revert(mogulOrganisationInstance.from(INVESTOR).setWhiteLister(newWhiteLister), 'Changing whiteLister not from owner did not throw');
+                await assert.revert(mogulOrganisationInstance.from(INVESTOR).setManager(newWhiteLister), 'Changing whiteLister not from owner did not throw');
             });
 
             it('Should let investor to invest and save him as whitelisted if approved from owner / whitelister', async () => {

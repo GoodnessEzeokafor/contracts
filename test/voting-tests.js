@@ -375,12 +375,6 @@ describe('Voting Contract', function () {
         it('Should not allow to finalize round within voting period', async () => {
             await assert.revert(votingContract.finalizeRound());
         });
-
-        it('Should revert if called by not owner', async () => {
-            await utils.setTimeTo(provider, endDate + 1);
-            await assert.revert(votingContract.from(INVESTOR).finalizeRound());
-        });
-
     });
 
     describe('Revoke Vote', function () {

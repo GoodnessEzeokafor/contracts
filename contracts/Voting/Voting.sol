@@ -149,7 +149,7 @@ contract Voting is Ownable {
     /*
     * @dev function finalizeRound allows contract admin to finalize an ended round
     */
-    function finalizeRound() public onlyOwner {
+    function finalizeRound() public {
         require(rounds[currentRound].endDate < now, "finalizeRound :: the round is not finished");
 
         uint256 mostVotes;
