@@ -1,6 +1,6 @@
-# Mogul Studios Movie Investment Voting Contract
+# Mogul Productions Movie Investment Voting Contract
 
-The contract and processes described bellow serve the purpose of allowing Mogul Productions CO Token holders to make investment decisions.
+The contract and processes described bellow serve the purpose of allowing Mogul Productions C-Org Token holders to make investment decisions.
 
 An administrative user is allowed to submit proposals and investors need to have the ability to vote on the proposals. Hereafter the process of proposal, voting and finalization will be called investment round. Description of the process can be found below.
 
