@@ -22,7 +22,7 @@ Start time for the voting round
 
 Mapping between address and proposal id - used to determine if a given investor has voted or not and if so, for which proposal
 
-Transfer of the maximum DAI that will be disbursed (equal to the amount of the highest requested money by a proposal)
+Transfer of the maximum USD that will be disbursed (equal to the amount of the highest requested money by a proposal)
 
 Every Proposal should have:
 
@@ -62,7 +62,7 @@ This is the phase after the voting has finished. During this phase the proposer 
 
 ### Creating Investment Round
 ```
-function createProposal(
+function createRound(
 	bytes32[] memory _movieNames, 
 	address[] memory _sponsorshipReceiver,
 	uint256[] memory _requestedAmount,
