@@ -11,7 +11,7 @@ The continuous organization has several states that it can be at. They are chron
 ### Deployment
 The first state in the lifecycle of the Mogul CO is its deployment. During deployment time several key configurations are passed. These are:
 - address _bondingMath - the address of the solidity contract performing the CO formulas calculation (it calls the vyper contracts internally)
-- address _mogulDAI - the address of the USD stable token used for contribution
+- address _mogulUSD - the address of the USD stable token used for contribution
 - address _mogulToken - the address of the Mogul CO token. This token needs to be deployed beforehand and once the Mogul CO contract is deployed, the CO address should be made the "minter" of the Mogul Token.
 - address _mogulBank - the address receiving the investment fund
 - address _whiteLister - the address that has the privilege to whitelist investors. No address can invest if it is not whitelisted.
