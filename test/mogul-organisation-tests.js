@@ -189,6 +189,25 @@ describe('Mogul Organisation Contract', function () {
                 assert.strictEqual(toHumanReadableValue(ethers.utils.formatEther(amount)), toHumanReadableValue(Number(EXPECTED_INVESTOR_MOGUL_BALANCE / normalization).toFixed(10)))
             });
 
+            it('should send 2% of the received MGL to mogul wallet', async () => {
+                let commissionPercentage = 2;
+                let ownerMogulBalance = await mogulTokenInstance.balanceOf(OWNER.address);
+
+                await mogulOrganisationInstance.from(INVESTOR).invest(INVESTMENT_AMOUNT, signedData, {
+                    gasPrice: MAX_GAS_PRICE
+                });
+
+                let investorMogulBalance = await mogulTokenInstance.balanceOf(INVESTOR.address);
+                let commissionMGL = investorMogulBalance.mul(commissionPercentage).div(100);
+
+                let expectedOwnerBalance = ownerMogulBalance.add(commissionMGL);
+
+                let ownerMogulBalanceAfter = await mogulTokenInstance.balanceOf(OWNER.address);
+
+                assert(ownerMogulBalanceAfter.eq(expectedOwnerBalance), 'Incorrect calculation of 2% MGL commission');
+
+            });
+
             it('should send correct usd amount to the mogul bank', async () => {
                 await mogulOrganisationInstance.from(INVESTOR).invest(INVESTMENT_AMOUNT, signedData, {
                     gasPrice: MAX_GAS_PRICE
@@ -417,8 +436,8 @@ describe('Mogul Organisation Contract', function () {
 
                 let usdBalance = await mogulUSDInstance.balanceOf(INVESTOR.address);
 
-                let normalizedUSDBalance = (usdBalance / normalization).toFixed(6);
-                let expectedBalance = (expectedUsd / normalization).toFixed(6);
+                let normalizedUSDBalance = (usdBalance / normalization).toFixed(4);
+                let expectedBalance = (expectedUsd / normalization).toFixed(4);
 
                 assert.strictEqual(toHumanReadableValue(normalizedUSDBalance), toHumanReadableValue(expectedBalance));
             });
