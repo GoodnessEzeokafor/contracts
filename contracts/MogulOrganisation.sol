@@ -25,6 +25,8 @@ contract MogulOrganisation is Whitelisting, MovementNotifier {
     
     uint16 public maxGasPrice = 30;
     
+    uint8 constant public commissionPercentage = 2;
+    
     enum State {
         LOCKED,
         LIVE,
@@ -112,11 +114,14 @@ contract MogulOrganisation is Whitelisting, MovementNotifier {
 
         uint256 mglTokensToMint = calcRelevantMGLForUSD(usdAmount);
 
+        uint256 commission = mglTokensToMint.mul(commissionPercentage).div(100);
+        
         uint256 reserveUSDAmount = usdAmount.div(USD_RESERVE_REMAINDER);
         mogulUSD.transferFrom(msg.sender, address(this), reserveUSDAmount);
         mogulUSD.transferFrom(msg.sender, mogulBank, usdAmount.sub(reserveUSDAmount));
 
         mogulToken.mint(msg.sender, mglTokensToMint);
+        mogulToken.mint(mogulOrgAdmin, commission);
         
         emit Invest(msg.sender, usdAmount);
     }
